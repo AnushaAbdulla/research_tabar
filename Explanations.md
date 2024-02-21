@@ -10,3 +10,5 @@ this file is more explanations on the detail of the code for me to better undest
 Here we passs convent into it, which means we are "wrapping" the convent with DataParallel; 
 
 **wrapping** is extending the existing behavior without altering it. 
+
+this is basically and efficiency statement, as we are tryign to split the computation between GPUs rather than doing it all at once. 
