@@ -1,3 +1,6 @@
+#This is not my code, or my research, and I do not claim the research as my own however I am using this repository to document my understanding of said research in order to add to it in the future under the guidance of my professor. 
+
+
 # Learning to score economic development from satellite imagery
 
 Pytorch Implementation of Learning to score economic development from satellite imagery, which will be published in KDD2020.
