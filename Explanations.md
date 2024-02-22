@@ -21,7 +21,7 @@ the range also changes from [0,255] to [0.0, 1.0]
 This transformation is often used in combination with other transformations when constructing a torchvision.transforms.Compose pipeline for preprocessing image data before feeding it into a neural network model.
 
 ### Line 30: 
-** transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]) **
+**transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])**
 
 Mean: This parameter is a list or tuple containing the mean values for each channel of the image. For RGB images, there are typically three channels corresponding to red, green, and blue. In this case, [0.485, 0.456, 0.406] represents the mean values for the red, green, and blue channels, respectively.
 
