@@ -105,27 +105,43 @@ def main(args):
 
         for batch_idx, (inputs1, inputs2, indexes) in enumerate(trainloader):
             #iterates over batches of data loaded by the trainloader, where each batch consists of inputs1, inputs2, and indexes
-            inputs1, inputs2, indexes = inputs1.cuda(), inputs2.cuda(), indexes.cuda()  #moves those 3 to GPU using .cuda()         
+            inputs1, inputs2, indexes = inputs1.cuda(), inputs2.cuda(), indexes.cuda()  
+            #moves those 3 to GPU using .cuda()         
             batch_size = inputs1.shape[0]
+            #retrieves the batch size by accessing the size of the firest deimention of inputs1
             labels = p_label[indexes].cuda()
+            #retrieves the cluster labels corresponding to teh current batch of data by indexing p_label wiht indexes and moves them to the GPU
             inputs = torch.cat([inputs1, inputs2])
+            #concatenates inputs1 and inputs 2 alonf the first dimension to create a single input tensor
             outputs = model(inputs)
+            #passes the concatendated inputs throguh the model to obtain the outputs
             outputs1 = outputs[:batch_size]
             outputs2 = outputs[batch_size:]
+            #splits the outputs into two parts ooutputs1 for the first set of inputs (inputs1) and outputs2 for the second set (inputs2)
             outputs3 = fc(outputs1)
+            #passes outputs1 throught the fully connected layer fc, to obtain output3
             ce_loss = criterion(outputs3, labels)
+            #computs the cross-entropy loss (ce_loss) between outputs3 and labels
             aug_loss = criterion2(outputs1, outputs2) / batch_size
+            #computes the augmentation loss (aug_loss) using the cirterion2 function and divides it by the batch size
             loss = ce_loss + aug_loss
+            #computes teh total loss (loss) as the sum of teh cross-entropy loss and the augmentation loss
             optimizer.zero_grad()
+            #initializes the gradients to zero usign optimizer.zero_grad() to clear any previously stored gradients
             loss.backward()
+            #computes the gradients of the lsos w/ respect to the model parameters using backpropogation (loss.backward())
             optimizer.step()
+            #updates the model parameters using the optimizer
 
             if batch_idx % 20 == 0:
                 print("[BATCH_IDX : ", batch_idx, "LOSS : ",loss.item(), "CE_LOSS : ",ce_loss.item(),"AUG_LOSS : ",aug_loss.item(),"]" )
+                #prints the loss information every 20 batched if the batch index (batch_idx) is a multiple of 20
     torch.save(model.state_dict(), './checkpoint/ckpt_cluster_{}.t7'.format(args.mode))
+    #saves the state of the model (model.state_dict()) to a file named ckpt_cluster_{}.t7 where {} is replaced by the mode specified in args
                                                        
     
 if __name__ == "__main__":
     args = siCluster_parser()
     main(args)    
+    #parses the command-line arguments using siCluster_parser() and calls the main fucntion with the parsed arguments
     
