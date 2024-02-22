@@ -64,7 +64,9 @@ def main(args):
     #Defines a third sequence of transformations for the second set of training images, which is identical to train_transform1
     
     criterion = nn.CrossEntropyLoss().cuda()
+    #Initializes two loss functions: cross-entropy loss (criterion) and a custom loss function (criterion2)
     criterion2 = AUGLoss().cuda()
+#Moves both loss functions to the GPU
     if args.mode == 'rural':
         clusterset = GPSDataset('./meta_data/meta_rural.csv', './data/kr_data/', cluster_transform)
         trainset = GPSDataset('./meta_data/meta_rural.csv', './data/kr_data/', train_transform1, train_transform2)
@@ -73,28 +75,37 @@ def main(args):
         trainset = GPSDataset('./meta_data/meta_city.csv', './data/kr_data/', train_transform1, train_transform2)
     else:
         raise ValueError
+        #Depending on the mode specified in the arguments (args.mode), loads different datasets (clusterset and trainset) using GPSDataset
+#Loads datasets with different transformations based on the mode
         
     clusterloader = torch.utils.data.DataLoader(clusterset, batch_size=args.batch, shuffle=False, num_workers=1)
+#creates data loaders (clusterloader and trainloader) using torch.utils.data.DataLoader to load batches of data from the datasets (clusterset and trainset). clusterloader is used for loading data during clustering and does not shuffle the data (shuffle=False).
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=args.batch, shuffle=True, num_workers=1, drop_last = True)
+#used for loading training data, shuffles the data (shuffle=True), and drops the last incomplete batch if any (drop_last=True)
     deepcluster = Kmeans(args.nmb_cluster)
+#Initializes the clustering algorithm with the specified number of clusters (args.nmb_cluster) using the K-means algorithm.
     optimizer = torch.optim.Adam(model.parameters(), args.lr)
+#Initializes the Adam optimizer to optimize the parameters of the model with the specified learning rate (args.lr).
     
     
-    for epoch in range(0, args.epochs):
+    for epoch in range(0, args.epochs): ##iterates over each epoch for the specified range and prints the current number using the print 
         print("Epoch : %d"% (epoch))
-        features = compute_features(clusterloader, model, len(clusterset), args.batch) 
-        clustering_loss, p_label = deepcluster.cluster(features)
-        p_label = p_label.tolist()
-        p_label = torch.tensor(p_label).cuda()
+        features = compute_features(clusterloader, model, len(clusterset), args.batch)  #computes features for the data loaded by clusterloader using cluser_features and passing the model the length and the batch size
+        clustering_loss, p_label = deepcluster.cluster(features) #uses deepcluser's object cluser to pass the computed features
+        p_label = p_label.tolist() #this returns the clusetering loss nad the predicted cluster labels
+        p_label = torch.tensor(p_label).cuda() #converts the predicted cluster labels to a list and then creates a tensor from it and moves it to the GPU
 
-        model.train()
-        fc = nn.Linear(512, args.nmb_cluster)
-        fc.weight.data.normal_(0, 0.01)
+     
+        model.train() #sets the training mode
+        fc = nn.Linear(512, args.nmb_cluster) # initializes a fully connected layer (fc) w/ input size 512 and output size equal to number of clusters
+        fc.weight.data.normal_(0, 0.01) #initializes the weights of the fully connected layer wiht a normal distribution and sets the biases to 0 in line below
         fc.bias.data.zero_()
-        fc.cuda()
+        fc.cuda() # moves to GPU aka that is what .cuda does
+        
 
         for batch_idx, (inputs1, inputs2, indexes) in enumerate(trainloader):
-            inputs1, inputs2, indexes = inputs1.cuda(), inputs2.cuda(), indexes.cuda()           
+            #iterates over batches of data loaded by the trainloader, where each batch consists of inputs1, inputs2, and indexes
+            inputs1, inputs2, indexes = inputs1.cuda(), inputs2.cuda(), indexes.cuda()  #moves those 3 to GPU using .cuda()         
             batch_size = inputs1.shape[0]
             labels = p_label[indexes].cuda()
             inputs = torch.cat([inputs1, inputs2])
