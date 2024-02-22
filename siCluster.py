@@ -17,21 +17,33 @@ def main(args):
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
     np.random.seed(args.seed)
+    #Sets the random seed for reproducibility across different runs of the code
     path = args.pretrained_path
+    #Assigns the path to the pretrained model from the command-line arguments
     model = models.resnet18(pretrained=False)
+    #Initializes a ResNet-18 model with pre-trained weights set to False
     model = nn.DataParallel(model)
+    #Wraps the model with nn.DataParallel to enable parallel training on multiple GPUs
     model.module.fc = nn.Linear(512, 10)
+    #Replaces the fully connected layer (fc) of the model with a new linear layer with output size 10
     cudnn.benchmark = True
+    #Sets the cuDNN benchmark to True for optimizing training performance
     model.load_state_dict(torch.load(path)['state_dict'], strict = False)
+    #Loads the pretrained weights from the specified path into the model
     model.module.fc = nn.Sequential()
+    #Replaces the fully connected layer with an empty sequential layer, effectively removing it
     model.cuda()
+    #Moves the model to the GPU
     cudnn.benchmark = True
+    #Sets the cuDNN benchmark to True for optimizing training performance
     
     cluster_transform =transforms.Compose([
                       transforms.Resize(256),
                       transforms.CenterCrop(224),
                       transforms.ToTensor(),
                       transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+    #Defines a sequence of transformations to be applied to the input images for clustering.
+#These transformations resize the image to 256x256, crop the center to 224x224, convert it to a PyTorch tensor, and normalize it.
     
     train_transform1 =transforms.Compose([
                       transforms.Resize(256),
@@ -40,7 +52,8 @@ def main(args):
                       transforms.RandomVerticalFlip(),
                       transforms.ToTensor(),
                       transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
-    
+    #Defines another sequence of transformations for training images.
+#These transformations are similar to the cluster transformation but include additional random horizontal and vertical flips for data augmentation.
     train_transform2 =transforms.Compose([
                       transforms.Resize(256),
                       transforms.CenterCrop(224),
@@ -48,7 +61,7 @@ def main(args):
                       transforms.RandomVerticalFlip(),
                       transforms.ToTensor(),
                       transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
-    
+    #Defines a third sequence of transformations for the second set of training images, which is identical to train_transform1
     
     criterion = nn.CrossEntropyLoss().cuda()
     criterion2 = AUGLoss().cuda()
