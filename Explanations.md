@@ -33,3 +33,9 @@ When applied to an image, the transforms.Normalize transformation performs the f
 
 Subtracts the mean value.
 Divides by the standard deviation value.
+
+## SiCluster.py
+
+###Line
+
+In the context of image processing and computer vision, "center cropping" refers to the process of extracting a region of interest from an image by focusing on its center. 
