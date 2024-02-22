@@ -85,6 +85,7 @@ def extract_rural_cluster(args):
     #Creates a list of tuples (rural_cluster) where each tuple contains the image filename and its corresponding cluster label. The rural cluster labels are incremented by the number of city clusters to ensure uniqueness across all clusters
     return rural_cluster
 # Returns the list of image filenames and their cluster labels for the rural dataset
+
 def extract_nature_cluster(args): #Defines a function named extract_nature_cluster which takes args as an argument
     f = open('./meta_data/meta_nature.csv', 'r', encoding='utf-8')
     #Opens the metadata CSV file specific to the nature dataset for reading
@@ -98,7 +99,7 @@ def extract_nature_cluster(args): #Defines a function named extract_nature_clust
     images.pop(0)   
     #Removes the first element from the images list, assuming it's the header of the CSV file
     nature_cluster = []
-    cnum = args.city_cnum + args.city_cnum
+    cnum = args.city_cnum + args.city_cnum #CONFUSION
     #Initializes an empty list nature_cluster to store the nature cluster information.
 #Calculates the total number of city clusters by doubling the number of city clusters (args.city_cnum) and assigns it to the variable cnum
     for i in range(0, len(images)):
@@ -117,7 +118,7 @@ def main(args):
     #Calls three functions (extract_city_cluster, extract_rural_cluster, and extract_nature_cluster) to extract clusters for city, rural, and nature images based on the provided arguments (args)
     total_cluster = city_cluster + rural_cluster + nature_cluster
     #Concatenates the clusters obtained from different regions into a single list called total_cluster
-    cnum = args.city_cnum + args.rural_cnum
+    cnum = args.city_cnum + args.rural_cnum #CONFUSION
     #Calculates the total number of clusters (cnum) by summing the number of city clusters and rural clusters
     cluster_dir = './data/{}/'.format(args.cluster_dir)
     #Defines the directory path where the clusters will be stored based on the provided argument cluster_dir
