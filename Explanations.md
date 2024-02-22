@@ -2,6 +2,8 @@ this file is more explanations on the detail of the code for me to better undest
 
 ## Starting with extract_cluster.py:
 
+In ResNet-18, the term "weights" typically refers to the parameters learned by the neural network during the training process. These parameters consist of weights and biases associated with each layer of the network, including convolutional layers, fully connected layers, and batch normalization layers.
+
 ### Line 20: 
 **convent** is the "convolutional neural network model" defined in pytorch
 
