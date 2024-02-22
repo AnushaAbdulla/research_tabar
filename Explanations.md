@@ -36,6 +36,6 @@ Divides by the standard deviation value.
 
 ## SiCluster.py
 
-###Line 45
+### Line 45:
 
 In the context of image processing and computer vision, "center cropping" refers to the process of extracting a region of interest from an image by focusing on its center. 
