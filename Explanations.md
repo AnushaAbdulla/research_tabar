@@ -17,3 +17,5 @@ this is basically and efficiency statement, as we are tryign to split the comput
 **transforms.ToTensor()** converts the dimensions of the image from Height x Width x Channels (H x W x C) to Channels x Height x Width (C x H x W), which is the standard format for PyTorch tensors representing images.
 
 the range also changes from [0,255] to [0.0, 1.0]
+
+This transformation is often used in combination with other transformations when constructing a torchvision.transforms.Compose pipeline for preprocessing image data before feeding it into a neural network model.
