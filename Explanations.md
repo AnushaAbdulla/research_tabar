@@ -12,3 +12,8 @@ Here we passs convent into it, which means we are "wrapping" the convent with Da
 **wrapping** is extending the existing behavior without altering it. 
 
 this is basically and efficiency statement, as we are tryign to split the computation between GPUs rather than doing it all at once. 
+
+### Line 29:
+**transforms.ToTensor()** converts the dimensions of the image from Height x Width x Channels (H x W x C) to Channels x Height x Width (C x H x W), which is the standard format for PyTorch tensors representing images.
+
+the range also changes from [0,255] to [0.0, 1.0]
