@@ -47,6 +47,7 @@ def extract_city_cluster(args):
     city_cluster = []
     for i in range(0, len(images)):
         city_cluster.append([images[i], labels[i]]) #Creates a list of tuples (city_cluster) where each tuple contains the image filename and its corresponding cluster label
+        #A tuple in Python is an ordered collection of elements, similar to a list. 
         
     return city_cluster #Returns the list of image filenames and their cluster labels for the city dataset
 
